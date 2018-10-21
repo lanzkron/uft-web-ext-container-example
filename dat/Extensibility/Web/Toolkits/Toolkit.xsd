@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Controls">
+		<xs:annotation>
+			<xs:documentation>The top-level element containing all of the toolkit information.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Description" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Text that describes the custom toolkit support set.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="Settings" minOccurs="0"/>
+				<xs:element ref="JSLibrariesToInject" minOccurs="0"/>
+				<xs:element ref="CommonIdentification" minOccurs="0"/>
+				<xs:element name="ToolkitStateQuery" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation> The function UFT should call to check whether the toolkit is fully loaded before recording. </xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attributeGroup ref="ImpFuncAttrs"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="Control" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="priority" use="optional" default="100">
+				<xs:annotation>
+					<xs:documentation>The priority of the toolkit. When UFT attempts to identify the test object class mapped to a custom control, it searches in the different toolkits in the order of their priority (highest priority first). </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="999"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Settings">
+		<xs:annotation>
+			<xs:documentation> A collection of settings, each defined as a variable with a name and a value.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Variable" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>A single settings element. </xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="name" use="required">
+							<xs:annotation>
+								<xs:documentation>The name of the setting.</xs:documentation>
+							</xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="default_imp_file"/>
+                  <xs:enumeration value="common_file"/>
+                  <xs:enumeration value="cache scripts"/>
+                  <xs:enumeration value="func_to_get_base_elem"/>
+                  <xs:enumeration value="file_for_func_to_get_base_elem"/>
+                  <xs:enumeration value="func_to_get_table_data"/>
+				  <xs:enumeration value="func_to_get_cell_elem"/>
+                  <xs:enumeration value="other supported types" />
+                </xs:restriction>
+              </xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="value" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>The value for the setting.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="JSLibrariesToInject">
+		<xs:annotation>
+			<xs:documentation> A collection of JSLibrary elements. </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="JSLibrary" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Specifies the location of a JavaScript library to inject into the target Web page.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="path" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>The file system path to the library.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CommonIdentification">
+		<xs:annotation>
+			<xs:documentation>Test object identification information at the toolkit level.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attributeGroup ref="ImpFuncAttrs"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Control">
+		<xs:annotation>
+			<xs:documentation>Information for identifying and supporting custom controls that should be mapped to the test object class specified in the TestObjectClass attribute.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="Settings" minOccurs="0"/>
+				<xs:element ref="Identification" minOccurs="0"/>
+				<xs:element ref="Record" minOccurs="0"/>
+				<xs:element ref="Run" minOccurs="0"/>
+				<xs:element ref="ListOfValues" minOccurs="0"/>
+				<xs:element ref="Filter" minOccurs="0"/>
+			</xs:all>
+			<xs:attribute name="TestObjectClass" type="xs:ID" use="required">
+				<xs:annotation>
+					<xs:documentation>The name of the test object class.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="IsContainer" type="xs:boolean" use="optional" default="false">
+				<xs:annotation>
+					<xs:documentation>Indicates whether to include the control as a parent object in the test object hierarchy, when it contains other controls or web elements.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Identification">
+		<xs:annotation>
+			<xs:documentation>Information on how to identify which controls are mapped to this test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:sequence>
+						<xs:element ref="HTMLTags" minOccurs="0"/>
+						<xs:element ref="Conditions" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:sequence>
+						<xs:element name="Browser" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>A collection of Conditions elements to use when working with the specified browser.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element ref="HTMLTags" minOccurs="0"/>
+									<xs:element ref="Conditions" minOccurs="0" maxOccurs="unbounded"/>
+								</xs:sequence>
+								<xs:attribute name="name" use="required">
+									<xs:annotation>
+										<xs:documentation>The type of browser.</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="internet explorer"/>
+											<xs:enumeration value="Mozilla Firefox"/>
+											<xs:enumeration value="Chrome"/>
+											<xs:enumeration value="*"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
+								<xs:attribute name="min_version" type="xs:string" use="optional">
+									<xs:annotation>
+										<xs:documentation>The browser version. The Conditions elements within this Browser element are used when working with browsers of the specified type, whose version is the same or later.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attributeGroup ref="ImpFuncAttrs"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Record">
+		<xs:annotation>
+			<xs:documentation>Information on how to record steps that the user performs on a custom control mapped to this test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="EventListening" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Event listening rules.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attributeGroup ref="ImpFuncAttrs"/>
+						<xs:attributeGroup ref="EventListeningAttrs"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Run">
+		<xs:annotation>
+			<xs:documentation>The element containing the information for supporting the test object methods and identification properties for this test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="Methods" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The element containing the information for supporting the test object methods for this test object class.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Method" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>The information for supporting a specific test object method.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string" use="required">
+										<xs:annotation>
+											<xs:documentation>The name of the test object method.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attributeGroup ref="ImpFuncAttrs"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Properties" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The function UFT should call to retrieve the values of identification properties for this test object class.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attributeGroup ref="ImpFuncAttrs"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ListOfValues">
+		<xs:annotation>
+			<xs:documentation>The function UFT should call to retrieve lists of possible values for test object method arguments.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attributeGroup ref="ImpFuncAttrs"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Filter">
+		<xs:annotation>
+			<xs:documentation>The element containing the filtering rules for learning objects in UFT and for the Object Spy.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="Learn" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The filtering rules for learning objects in UFT.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attributeGroup ref="ImpFuncAttrs"/>
+						<xs:attributeGroup ref="FilterAttrs"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Spy" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>The filtering rules for using the Object Spy in UFT.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attributeGroup ref="SpyAttrs"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Conditions">
+		<xs:annotation>
+			<xs:documentation>A collection of identification conditions.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Condition" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>A single identification condition.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="prop_name" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>The name of the HTML property whose value is checked in this identification condition.  
+</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="expected_value" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>The expected value of the HTML property.
+</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="is_reg_exp" type="xs:boolean" use="optional" default="false">
+							<xs:annotation>
+								<xs:documentation>Indicates whether the expected value is a regular expression. Possible values: true, false. </xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="equal" type="xs:boolean" use="optional" default="true">
+							<xs:annotation>
+								<xs:documentation>Indicates whether the value of the property must be equal to the specified expected value for the condition to be met. Possible values: true, false. </xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="trim" type="xs:boolean" use="optional" default="true">
+							<xs:annotation>
+								<xs:documentation>Indicates whether the value of the property and the expected value must be trimmed before the evaluation of the condition. Possible values: true, false. </xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="Conditions" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="logic" use="optional" default="and">
+				<xs:annotation>
+					<xs:documentation>Indicates whether to use 'and' or 'or' logic on the set of conditions in this element. Possible values: and, or.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="and"/>
+						<xs:enumeration value="or"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="type" use="optional">
+				<xs:annotation>
+					<xs:documentation>The type of condition. Required if the condition is not nested within another. Possible values: IdentifyIfPropMatch, CallIDFuncIfPropMatch, SkipIfPropMatch.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="CallIDFuncIfPropMatch"/>
+						<xs:enumeration value="IdentifyIfPropMatch"/>
+						<xs:enumeration value="SkipIfPropMatch"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:attributeGroup name="ImpFuncAttrs">
+		<xs:annotation>
+			<xs:documentation>Attributes of the function used for implementation.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="type" use="optional" default="javascript">
+			<xs:annotation>
+				<xs:documentation>The type of implementation function.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="javascript"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="function" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The name of the implementation function.
+</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="file_name" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The file system path to the file containing the function. If no file name is specified, the default file name defined in the Control\Settings element is used.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="EventListeningAttrs">
+		<xs:annotation>
+			<xs:documentation>Attributes for event listening.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="use_default_event_handling_for_children" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>Indicates whether to use the default Web Event Configuration for handling events on this control's children.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="use_default_event_handling" type="xs:boolean" use="optional" default="true">
+			<xs:annotation>
+				<xs:documentation>Indicates whether to use the default Web Event Configuration for handling events on this control.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="FilterAttrs">
+		<xs:annotation>
+			<xs:documentation>Attributes for filtering.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="learn_control" use="optional" default="Yes">
+			<xs:annotation>
+				<xs:documentation>Indicates whether to learn this control.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Yes"/>
+					<xs:enumeration value="No"/>
+					<xs:enumeration value="IfChildren"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="learn_children" use="optional" default="Yes">
+			<xs:annotation>
+				<xs:documentation>Indicates whether to learn the children of this control. </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Yes"/>
+					<xs:enumeration value="No"/>
+					<xs:enumeration value="CallFilterFunc"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="SpyAttrs">
+		<xs:annotation>
+			<xs:documentation>Attributes for supporting this test object class in the Object Spy.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="is_control_spyable" use="optional" default="Yes">
+			<xs:annotation>
+				<xs:documentation>Indicates whether the Object Spy displays this test object class.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Yes"/>
+					<xs:enumeration value="No"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:element name="HTMLTags">
+		<xs:annotation>
+			<xs:documentation>A collection of identification HTML tags.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Tag" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>A single identification HTML tag. An HTML element type for which the information in the Identification element is relevant.
+									</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="name" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>The name of the HTML tag.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

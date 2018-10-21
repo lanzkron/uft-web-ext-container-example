@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TypeInformation PackageName="Example" AddinName="Web" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="..\..\ClassesDefintions.xsd">
+  <ClassInfo Name="EgForm" GenericTypeID="Form" BaseClassInfoName="WebElement">    
+    <Description>A form.</Description> 
+    <IdentificationProperties>
+      <IdentificationProperty Name="html id"  ForDescription="true"	 />
+      <IdentificationProperty Name="html tag" ForVerification="true" />
+    </IdentificationProperties>
+  </ClassInfo>
+</TypeInformation>

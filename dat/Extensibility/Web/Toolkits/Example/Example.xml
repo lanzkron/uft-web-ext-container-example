@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Controls xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="..\Toolkit.xsd">  
+  <Control TestObjectClass="EgForm" IsContainer="true">
+    <Identification>     
+      <Browser name="*">
+        <HTMLTags>
+          <Tag name="FORM" />
+        </HTMLTags>        
+        <Conditions type="IdentifyIfPropMatch">
+          <Condition prop_name="id" expected_value=".+" is_reg_exp="true" />
+        </Conditions>
+      </Browser>
+    </Identification>
+    <Settings>
+      <Variable name="default_imp_file" value="JavaScript\EgForm.js"/>
+    </Settings>
+    <Filter>
+      <Learn learn_control="Yes" learn_children="Yes" />
+      <Spy is_control_spyable="Yes" />
+    </Filter>
+  </Control>
+</Controls>

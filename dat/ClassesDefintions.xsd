@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="TypeInformation">
+		<xs:annotation>
+			<xs:documentation>The top level element containing all of the test object classes (ClassInfo elements) and predefined lists of values (ListOfValues elements).</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ClassInfo" maxOccurs="unbounded"/>
+				<xs:element ref="ListOfValues" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="Priority" type="xs:integer" default="0">
+				<xs:annotation>
+					<xs:documentation>The priority of the test object classes defined in this file.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="Load" type="xs:boolean" use="optional" default="true">
+				<xs:annotation>
+					<xs:documentation>Specifies whether this file should be loaded.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="DevelopmentMode" type="xs:boolean" use="optional" default="false">
+				<xs:annotation>
+					<xs:documentation>Specifies whether the user is in development mode.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="PackageName" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>The name of the environment to which this file applies.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="AddinName" use="required">
+				<xs:annotation>
+					<xs:documentation>The name of the add-in to which this file applies. UFT loads this file only if the relevant add-in is loaded.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="AddinName_Type"/>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ClassInfo">
+		<xs:annotation>
+			<xs:documentation>The test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Description" minOccurs="0"/>
+				<xs:element ref="HelpInfo" minOccurs="0"/>
+				<xs:element ref="IconInfo" minOccurs="0"/>
+				<xs:element ref="TypeInfo" minOccurs="0"/>
+				<xs:element ref="AdditionalInfo" minOccurs="0"/>
+				<xs:element ref="IdentificationProperties" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="Name" type="RestrictedString" use="required">
+				<xs:annotation>
+					<xs:documentation>The name of the test object class.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="BaseClassInfoName" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The name of the base test object class.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="GenericTypeID" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The generic type of the test object class.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="DefaultOperationName" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The default operation (method or property) of the test object class.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="FilterLevel" type="xs:boolean" use="optional" default="0">
+				<xs:annotation>
+					<xs:documentation>The filter level of the test object class.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="ROTypeInfo" type="xs:boolean" default="false">
+				<xs:annotation>
+					<xs:documentation>Specifies whether UFT should use the TypeInfo information from the actual object in the object repository and not from the XML file.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Operation">
+		<xs:annotation>
+			<xs:documentation>A single operation (method or property) for a test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Description" minOccurs="0"/>
+				<xs:element ref="Documentation" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="HelpInfo" minOccurs="0"/>
+				<xs:element ref="IconInfo" minOccurs="0"/>
+				<xs:element ref="Argument" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="ReturnValueType" minOccurs="0"/>
+				<xs:element ref="AdditionalInfo" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="Name" type="RestrictedString" use="required">
+				<xs:annotation>
+					<xs:documentation>The name of the operation.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="PropertyType" default="Method">
+				<xs:annotation>
+					<xs:documentation>The operation type (method or property).</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="Property_Type">
+						<xs:maxLength value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="ExposureLevel" use="optional" default="Expert">
+				<xs:annotation>
+					<xs:documentation>Specifies which users can access the operation.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Expert"/>
+						<xs:enumeration value="CommonUsed"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="SortLevel" type="xs:integer" use="optional" default="0">
+				<xs:annotation>
+					<xs:documentation>The sort level of the operation.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="Property_Type">
+		<xs:list itemType="Property_Types"/>
+	</xs:simpleType>
+	<xs:simpleType name="Property_Types">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Method"/>
+			<xs:enumeration value="Property_Get"/>
+			<xs:enumeration value="Property_Put"/>
+			<xs:enumeration value="Property_PutRef"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Argument">
+		<xs:annotation>
+			<xs:documentation>The argument definitions for the operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Type"/>
+				<xs:element ref="AdditionalInfo" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="Name" type="RestrictedString" use="required">
+				<xs:annotation>
+					<xs:documentation>The argument name.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="IsMandatory" type="xs:boolean" use="required">
+				<xs:annotation>
+					<xs:documentation>Specifies whether the argument is mandatory.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="DynamicListOfValues" type="xs:boolean" use="optional" default="false">
+				<xs:annotation>
+					<xs:documentation>Specifies whether a dynamic list of possible values for this argument is displayed in UFT when the test is created or edited.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="DefaultValue" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The default value for this argument.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="Direction" default="In">
+				<xs:annotation>
+					<xs:documentation>Specifies whether this argument is an input argument or an output argument.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="In"/>
+						<xs:enumeration value="Out"/>
+						<xs:enumeration value="InOut"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Type">
+		<xs:annotation>
+			<xs:documentation>The argument or return value type.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="VariantType" type="Variant_Type">
+				<xs:annotation>
+					<xs:documentation>The variant type of the argument, return value, or property.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="ListOfValuesName" type="xs:IDREF" use="optional">
+				<xs:annotation>
+					<xs:documentation>The name of the list of values of the argument, return value, or property. </xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Description" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>The description of the element (ClassInfo or Operation).</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="Documentation">
+		<xs:annotation>
+			<xs:documentation>The documentation string for the operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="NumOfArguments" type="xs:integer" use="optional" default="0">
+						<xs:annotation>
+							<xs:documentation>The number of arguments that require values to be specified in order to show the documentation string for the operation. This attribute is currently not in use.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AdditionalInfo">
+		<xs:annotation>
+			<xs:documentation>Placeholder for additional information.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TypeInfo">
+		<xs:annotation>
+			<xs:documentation>Type information for a test object class, including the location of the external type library and a list of additional operations.					</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ExternalTypeInfo" minOccurs="0"/>
+				<xs:element ref="Operation" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ExternalTypeInfo">
+		<xs:annotation>
+			<xs:documentation>External type library information for the test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="TypeLibraryPath" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>The file system path to the type library file.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="CLSID" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>The class ID of the test object class. </xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="IdentificationProperties">
+		<xs:annotation>
+			<xs:documentation>The group of identification properties for the test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="IdentificationProperty" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="IdentificationProperty">
+		<xs:annotation>
+			<xs:documentation>An identification property for the test object class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="Name" type="IdentificationPropertyRestrictedString" use="required"/>
+			<xs:attribute name="ForVerification" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ForDefaultVerification" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ForDescription" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ForAssistive" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ForBaseSmartID" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ForOptionalSmartID" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="ForSpy" type="xs:boolean" use="optional" default="true"/>
+			<xs:attribute name="AssistivePropertyValue" type="xs:long" use="optional" default="0"/>
+			<xs:attribute name="OptionalSmartIDPropertyValue" type="xs:long" use="optional" default="0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="HelpInfo">
+		<xs:annotation>
+			<xs:documentation>
+				Context-sensitive Help information for the element (ClassInfo or Operation).
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="HelpFile" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>The file system path to the file that contains the Help information.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="HelpContext" type="xs:integer" use="optional" default="0">
+				<xs:annotation>
+					<xs:documentation>
+						The context identifier for the location in the Help file where the information resides.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="IconInfo">
+		<xs:annotation>
+			<xs:documentation>Icon information for the element (ClassInfo or Operation).</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="IconFile" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>The file system path to the file that contains the icon.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="IconIndex" type="xs:integer" use="optional">
+				<xs:annotation>
+					<xs:documentation>The index of the location of the icon in the file.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ReturnValueType">
+		<xs:annotation>
+			<xs:documentation>The type of value returned by the operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Type"/>
+				<xs:element ref="AdditionalInfo" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="RestrictedString">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z_]([a-zA-Z_0-9])*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IdentificationPropertyRestrictedString">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z_]([a-zA-Z_0-9 ])*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Variant_Type">
+		<xs:union memberTypes="xs:integer">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="String"/>
+					<xs:enumeration value="Integer"/>
+					<xs:enumeration value="Boolean"/>
+					<xs:enumeration value="Decimal"/>
+					<xs:enumeration value="Date"/>
+					<xs:enumeration value="Variant"/>
+					<xs:enumeration value="IDispatch"/>
+					<xs:enumeration value="IUnknown"/>
+					<xs:enumeration value="Enumeration"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="VT_EMPTY"/>
+					<xs:enumeration value="VT_NULL"/>
+					<xs:enumeration value="VT_I2"/>
+					<xs:enumeration value="VT_I4"/>
+					<xs:enumeration value="VT_R4"/>
+					<xs:enumeration value="VT_R8"/>
+					<xs:enumeration value="VT_CY"/>
+					<xs:enumeration value="VT_DATE"/>
+					<xs:enumeration value="VT_BSTR"/>
+					<xs:enumeration value="VT_DISPATCH"/>
+					<xs:enumeration value="VT_ERROR"/>
+					<xs:enumeration value="VT_BOOL"/>
+					<xs:enumeration value="VT_VARIANT"/>
+					<xs:enumeration value="VT_UNKNOWN"/>
+					<xs:enumeration value="VT_DECIMAL"/>
+					<xs:enumeration value="VT_I1"/>
+					<xs:enumeration value="VT_UI1"/>
+					<xs:enumeration value="VT_UI2"/>
+					<xs:enumeration value="VT_UI4"/>
+					<xs:enumeration value="VT_I8"/>
+					<xs:enumeration value="VT_UI8"/>
+					<xs:enumeration value="VT_INT"/>
+					<xs:enumeration value="VT_UINT"/>
+					<xs:enumeration value="VT_VOID"/>
+					<xs:enumeration value="VT_HRESULT"/>
+					<xs:enumeration value="VT_PTR"/>
+					<xs:enumeration value="VT_SAFEARRAY"/>
+					<xs:enumeration value="VT_CARRAY"/>
+					<xs:enumeration value="VT_USERDEFINED"/>
+					<xs:enumeration value="VT_LPSTR"/>
+					<xs:enumeration value="VT_LPWSTR"/>
+					<xs:enumeration value="VT_RECORD"/>
+					<xs:enumeration value="VT_FILETIME"/>
+					<xs:enumeration value="VT_BLOB"/>
+					<xs:enumeration value="VT_STREAM"/>
+					<xs:enumeration value="VT_STORAGE"/>
+					<xs:enumeration value="VT_STREAMED_OBJECT"/>
+					<xs:enumeration value="VT_STORED_OBJECT"/>
+					<xs:enumeration value="VT_BLOB_OBJECT"/>
+					<xs:enumeration value="VT_CF"/>
+					<xs:enumeration value="VT_CLSID"/>
+					<xs:enumeration value="VT_BSTR_BLOB"/>
+					<xs:enumeration value="VT_VECTOR"/>
+					<xs:enumeration value="VT_ARRAY"/>
+					<xs:enumeration value="VT_BYREF"/>
+					<xs:enumeration value="VT_RESERVED"/>
+					<xs:enumeration value="VT_ILLEGAL"/>
+					<xs:enumeration value="VT_ILLEGALMASKED"/>
+					<xs:enumeration value="VT_TYPEMASK"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:element name="ListOfValues">
+		<xs:annotation>
+			<xs:documentation>A predefined list of values that can be used for test object method arguments or return values.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="EnumValue" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>A possible value in a predefined list of values.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="Name" type="RestrictedString" use="required"/>
+						<xs:attribute name="RealValue" type="xs:integer" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Name" type="xs:ID" use="required">
+				<xs:annotation>
+					<xs:documentation>The name of the predefined list of values.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="AddinName_Type">
+		<xs:union memberTypes="xs:string">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="ActiveX"/>
+					<xs:enumeration value="Delphi"/>
+					<xs:enumeration value="Java"/>
+					<xs:enumeration value=".NET"/>
+					<xs:enumeration value="Oracle"/>
+					<xs:enumeration value="PeopleSoft"/>
+					<xs:enumeration value="PowerBuilder"/>
+					<xs:enumeration value="SAP"/>
+					<xs:enumeration value="SapGui"/>
+					<xs:enumeration value="Siebel"/>
+					<xs:enumeration value="Standard"/>
+					<xs:enumeration value="Stingray"/>
+					<xs:enumeration value="TEA"/>
+					<xs:enumeration value="Terminal Emulators"/>
+					<xs:enumeration value="Visual Basic"/>
+					<xs:enumeration value="VisualAge Smalltalk"/>
+					<xs:enumeration value="Web"/>
+					<xs:enumeration value="Web Services"/>
+					<xs:enumeration value="Windows Applications"/>
+					<xs:enumeration value="WPF"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+</xs:schema>
